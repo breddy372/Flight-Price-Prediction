@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Flight Price Prediction</title>
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+h1 {
+    text-align: center;
+    margin-top: 20px;
+}
+
+#prediction-form {
+    width: 250px;
+    margin: auto;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+input[type="text"],
+input[type="number"] {
+    width: 95%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+button {
+    display: block;
+    width: 100%;
+    background-color: #007bff;
+    color: #ffffff;
+    padding: 10px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+#prediction-result {
+    margin-top: 10px;
+    text-align: center;
+    font-weight: bold;
+}
+    
+    </style>
+</head>
+<body>
+    <h1>Flight Price Prediction</h1>
+    <form id="prediction-form">
+        <label for="airline">Airline:</label>
+        <input type="text" id="airline" name="airline" required><br><br>
+
+        <label for="source_city">Source City:</label>
+        <input type="text" id="source_city" name="source_city" required><br><br>
+
+        <label for="departure_time">Departure Time:</label>
+        <input type="text" id="departure_time" name="departure_time" required><br><br>
+
+        <label for="stops">Stops:</label>
+        <input type="text" id="stops" name="stops" required><br><br>
+
+        <label for="arrival_time">Arrival Time:</label>
+        <input type="text" id="arrival_time" name="arrival_time" required><br><br>
+
+        <label for="destination_city">Destination City:</label>
+        <input type="text" id="destination_city" name="destination_city" required><br><br>
+
+        <label for="class_">Class:</label>
+        <input type="text" id="class_" name="class_" required><br><br>
+
+        <label for="duration">Duration:</label>
+        <input type="number" step="any" id="duration" name="duration" required><br><br>
+
+        <label for="days_left">Days Left:</label>
+        <input type="number" step="1" id="days_left" name="days_left" required><br><br>
+
+        <button type="submit">Predict Price</button>
+    </form>
+    <div id="prediction-result"></div>
+
+    <script>
+        document.getElementById("prediction-form").addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            const formElements = event.target.elements;
+            const input = {
+                airline: formElements.airline.value,
+                source_city: formElements.source_city.value,
+                departure_time: formElements.departure_time.value,
+                stops: formElements.stops.value,
+                arrival_time: formElements.arrival_time.value,
+                destination_city: formElements.destination_city.value,
+                class_: formElements.class_.value,
+                duration: parseFloat(formElements.duration.value),
+                days_left: parseInt(formElements.days_left.value),
+            };
+
+            const response = await fetch("/predict/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(input),
+            });
+
+            const data = await response.json();
+            const resultDiv = document.getElementById("prediction-result");
+            resultDiv.innerHTML = `Predicted Price: $${data.predicted_prices.toFixed(2)}`;
+        });
+    </script>
+</body>
+</html>
+
